@@ -23,7 +23,15 @@ damfilename = "damchurnmodel.pickle"
 print(filename)
 dammodel = pickle.load(open(damfilename, 'rb'))
 
-api = Api(app)
+authorizations = {
+    'Basic Auth': {
+        'type': 'basic',
+        'in': 'header',
+        'name': 'Authorization'
+    },
+}
+
+api = Api(app,security='Basic Auth', authorizations=authorizations)
 apinamespace = api.namespace('damapis', description='DH AA COE Published Data Science Model APIs for Dubai Asset Management')
 
 a_language = apinamespace.model('Language', {'language': fields.String('The Language.')})
