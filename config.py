@@ -1,0 +1,16 @@
+DEBUG = False# Turns on debugging features in Flask
+BCRYPT_LOG_ROUNDS = 12# Configuration for the Flask-Bcrypt extension
+MAIL_FROM_EMAIL = "mohamed.khan@dubaiholding.com"# For use in application emails
+BASIC_AUTH_USERNAME = "modelusername"
+BASIC_AUTH_PASSWORD = "modelpassword"
+DAMCHURPRED_USERNAME = "damchurnpredusername"
+DAMCHURPRED_PASSWORD = "damchurnpredpassword"
+DAMCHURPRED_DBSERVER = "tcp:sqlsvrdamprd.database.windows.net,1433"
+DAMCHURPRED_DBNAME = "sqldbdamprd"
+DAMCHURPRED_DBUSER = "damprodsqlsvradmin"
+DAMCHURPRED_DBPWD = "datalakesqlsvr1?"
+DHMODEL_DBSERVER = "tcp:sqlsvrjumdev.database.windows.net,1433"
+DHMODEL_DBNAME = "sqldbjumdev"
+DHMODEL_DBUSER = "sqldbdevuser"
+DHMODEL_DBPWD = "JumPass123K"
+RUNTYPE = "TEST"
