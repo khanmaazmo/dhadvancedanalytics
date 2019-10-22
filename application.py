@@ -1,5 +1,5 @@
 import flask
-from flask import request, url_for, jsonify, make_response
+from flask import request, url_for, jsonify, make_response, Response
 import pickle
 import pandas as pd
 import pyodbc
@@ -90,7 +90,9 @@ class DAMChurnPredictRisk(Resource):
              cnxndh.commit()
 
         print(outputdf)
-        return outputdf.to_json(orient='records')
+        resp = Response(response=outputdf.to_json(orient='records'),status=200,mimetype="application/json")
+        #return outputdf.to_json(orient='records')
+        return resp
 
 @apinamespace.route('/leadscore')
 class DAMLeadScore(Resource):
