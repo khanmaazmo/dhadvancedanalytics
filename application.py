@@ -120,10 +120,10 @@ class JUMPredictCustSegment(Resource):
         content = request.get_json()
         inputdf = pd.io.json.json_normalize(content)
         print(inputdf.count())
-        server = app.config["JUM_DBSERVER"]
-        database = app.config["JUM_DBNAME"]
-        dbusername = app.config["JUM_DBUSER"]
-        dbpassword = app.config["JUM_DBPWD"]
+        server = app.config["DAMCHURPRED_DBUSER"] #JUM_DBSERVER
+        database = app.config["DAMCHURPRED_DBNAME"] #JUM_DBNAME
+        dbusername = app.config["JUM_DBUSER"] #JUM_DBUSER
+        dbpassword = app.config["DAMCHURPRED_DBPWD"] #JUM_DBPWD
         dhserver = app.config["DHMODEL_DBSERVER"]
         dhdatabase = app.config["DHMODEL_DBNAME"]
         dhdbusername = app.config["DHMODEL_DBUSER"]
@@ -134,16 +134,19 @@ class JUMPredictCustSegment(Resource):
         cursordh = cnxndh.cursor()
 
         for index, row in inputdf.iterrows():
-             VNAME_ID = float(row['NAME_ID'])
-             query = "SELECT NAME_ID, cluster from dbo.jumcustsegmentpredtable where NAME_ID = " + str(VNAME_ID)
+             #VNAME_ID = float(row['NAME_ID'])
+             htent = 47867 #
+             hunit = 7824 #
+             query = "SELECT htent, hunit, preds from dbo.damchurnprediction where htent = " + str(htent) + " and hunit = " + str(hunit)
+             #query = "SELECT NAME_ID, cluster from dbo.jumcustsegmentpredtable where NAME_ID = " + str(VNAME_ID)
              df = pd.read_sql(query, cnxn)
              print(df)
              if index == 0:
                  outputdf = df
              else:
                  outputdf = pd.concat([outputdf, df])
-             cursordh.execute(
-                 "INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegment',90000,GETDATE(),?)", VNAME_ID)
+
+             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegment',90000,GETDATE(),?)", VNAME_ID)
              cnxndh.commit()
 
         print(outputdf)
