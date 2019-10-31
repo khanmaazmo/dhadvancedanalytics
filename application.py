@@ -132,7 +132,7 @@ class JUMPredictCustSegment(Resource):
         cursordh = cnxndh.cursor()
 
         for index, row in inputdf.iterrows():
-             vnameid = float(row['NAME_ID'])
+             #vnameid = 999#float(row['NAME_ID'])
              htent = 47867#float(row['htent'])
              hunit = 7824#float(row['hunit'])
              query = "SELECT htent, hunit, preds from dbo.damchurnprediction where htent = " + str(htent) + " and hunit = " + str(hunit)
@@ -142,7 +142,7 @@ class JUMPredictCustSegment(Resource):
                  outputdf = df
              else:
                  outputdf = pd.concat([outputdf, df])
-             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegmentation',90000,GETDATE(),?)",vnameid)
+             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegmentation',90000,GETDATE(),?)",htent)
              cnxndh.commit()
 
         print(outputdf)
