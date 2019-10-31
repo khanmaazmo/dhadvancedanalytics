@@ -84,8 +84,8 @@ class DAMChurnPredictRisk(Resource):
                  outputdf = df
              else:
                  outputdf = pd.concat([outputdf, df])
-             #cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('DAM','ChurnPrediction',90000,GETDATE(),?,?)",htent, hunit)
-             #cnxndh.commit()
+             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('DAM','ChurnPrediction',90000,GETDATE(),?,?)",htent, hunit)
+             cnxndh.commit()
 
         print(outputdf)
         resp = Response(response=outputdf.to_json(orient='records'),status=200,mimetype="application/json")
@@ -133,8 +133,8 @@ class JUMPredictCustSegment(Resource):
 
         for index, row in inputdf.iterrows():
              #VNAME_ID = float(row['NAME_ID'])
-             htent = 47867 #
-             hunit = 7824 #
+             htent = 47867#
+             hunit = 7824#
              query = "SELECT htent, hunit, preds from dbo.damchurnprediction where htent = " + str(htent) + " and hunit = " + str(hunit)
              #query = "SELECT NAME_ID, cluster from dbo.jumcustsegmentpredtable where NAME_ID = " + str(VNAME_ID)
              df = pd.read_sql(query, cnxn)
