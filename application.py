@@ -102,3 +102,56 @@ class DAMLeadScore(Resource):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+jum_apinamespace = api.namespace('jumapis', description='DH AA COE Published Data Science Model APIs for Jumeirah')
+
+a_jumcustsegmentpredjson = jum_apinamespace.model('jumcustsegmentpredjson', {'nameid': fields.Integer('Name ID')})
+
+@jum_apinamespace.route('/predictcustsegment')
+class JUMPredictCustSegment(Resource):
+    @apinamespace.expect(a_jumcustsegmentpredjson)
+    def post(self):
+        if request.authorization:
+            username = request.authorization.username
+            password = request.authorization.password
+        else:
+            return make_response('Basic Authentication not provided', 401, {'WWW-Authenticate': 'Basic-realm="Login Required"'})
+
+        if username != app.config["JUM_USERNAME"] or password != app.config["JUM_PASSWORD"]:
+            return make_response('Incorrect Basic Authentication', 401, {'WWW-Authenticate' : 'Basic-realm="Login Required"'})
+
+        content = request.get_json()
+        inputdf = pd.io.json.json_normalize(content)
+        print(inputdf.count())
+        server = app.config["JUM_DBSERVER"]
+        database = app.config["JUM_DBNAME"]
+        dbusername = app.config["JUM_DBUSER"]
+        dbpassword = app.config["JUM_DBPWD"]
+        dhserver = app.config["DHMODEL_DBSERVER"]
+        dhdatabase = app.config["DHMODEL_DBNAME"]
+        dhdbusername = app.config["DHMODEL_DBUSER"]
+        dhdbpassword = app.config["DHMODEL_DBPWD"]
+
+        cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + dbusername + ';PWD=' + dbpassword)
+        cnxndh = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + dhserver + ';DATABASE=' + dhdatabase + ';UID=' + dhdbusername + ';PWD=' + dhdbpassword)
+        cursordh = cnxndh.cursor()
+
+        for index, row in inputdf.iterrows():
+             VNAME_ID = float(row['NAME_ID'])
+             query = "SELECT NAME_ID, cluster from dbo.jumcustsegmentpredtable where NAME_ID = " + str(VNAME_ID)
+             df = pd.read_sql(query, cnxn)
+             print(df)
+             if index == 0:
+                 outputdf = df
+             else:
+                 outputdf = pd.concat([outputdf, df])
+             cursordh.execute(
+                 "INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegment',90000,GETDATE(),?)", VNAME_ID)
+             cnxndh.commit()
+
+        print(outputdf)
+        resp = Response(response=outputdf.to_json(orient='records'),status=200,mimetype="application/json")
+        #return outputdf.to_json(orient='records')
+        return resp
