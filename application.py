@@ -104,7 +104,7 @@ a_jumcustsegmentpredjson = jum_apinamespace.model('jumcustsegmentpredjson', {'NA
 
 @jum_apinamespace.route('/predictcustsegment')
 class JUMPredictCustSegment(Resource):
-    @jum_apinamespace.expect(a_jumcustsegmentpredjson)
+    @apinamespace.expect(a_damchurnjson)
     def post(self):
         if request.authorization:
             username = request.authorization.username
@@ -112,16 +112,16 @@ class JUMPredictCustSegment(Resource):
         else:
             return make_response('Basic Authentication not provided', 401, {'WWW-Authenticate': 'Basic-realm="Login Required"'})
 
-        if username != app.config["JUM_USERNAME"] or password != app.config["JUM_PASSWORD"]:
+        if username != app.config["DAMCHURPRED_USERNAME"] or password != app.config["DAMCHURPRED_PASSWORD"]:
             return make_response('Incorrect Basic Authentication', 401, {'WWW-Authenticate' : 'Basic-realm="Login Required"'})
 
         content = request.get_json()
         inputdf = pd.io.json.json_normalize(content)
         print(inputdf.count())
-        server = app.config["DAMCHURPRED_DBUSER"] #JUM_DBSERVER
-        database = app.config["DAMCHURPRED_DBNAME"] #JUM_DBNAME
-        dbusername = app.config["JUM_DBUSER"] #JUM_DBUSER
-        dbpassword = app.config["DAMCHURPRED_DBPWD"] #JUM_DBPWD
+        server = app.config["DAMCHURPRED_DBSERVER"]
+        database = app.config["DAMCHURPRED_DBNAME"]
+        dbusername = app.config["DAMCHURPRED_DBUSER"]
+        dbpassword = app.config["DAMCHURPRED_DBPWD"]
         dhserver = app.config["DHMODEL_DBSERVER"]
         dhdatabase = app.config["DHMODEL_DBNAME"]
         dhdbusername = app.config["DHMODEL_DBUSER"]
@@ -132,19 +132,16 @@ class JUMPredictCustSegment(Resource):
         cursordh = cnxndh.cursor()
 
         for index, row in inputdf.iterrows():
-             #VNAME_ID = float(row['NAME_ID'])
-             htent = 47867#
-             hunit = 7824#
+             htent = float(row['htent'])
+             hunit = float(row['hunit'])
              query = "SELECT htent, hunit, preds from dbo.damchurnprediction where htent = " + str(htent) + " and hunit = " + str(hunit)
-             #query = "SELECT NAME_ID, cluster from dbo.jumcustsegmentpredtable where NAME_ID = " + str(VNAME_ID)
              df = pd.read_sql(query, cnxn)
              print(df)
              if index == 0:
                  outputdf = df
              else:
                  outputdf = pd.concat([outputdf, df])
-
-             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegment',90000,GETDATE(),?)", VNAME_ID)
+             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('DAM','ChurnPrediction',90000,GETDATE(),?,?)",htent, hunit)
              cnxndh.commit()
 
         print(outputdf)
