@@ -102,7 +102,7 @@ class DAMLeadScore(Resource):
 
 jum_apinamespace = api.namespace('jumapis', description='DH AA COE Published Data Science Model APIs for Jumeirah')
 
-a_jumcustsegmentpredjson = jum_apinamespace.model('jumcustsegmentpredjson', {'nameid': fields.Integer('Name ID')})
+a_jumcustsegmentpredjson = jum_apinamespace.model('jumcustsegmentpredjson', {'NAME_ID': fields.Integer('Name ID')})
 
 @jum_apinamespace.route('/predictcustsegment')
 class JUMPredictCustSegment(Resource):
@@ -154,4 +154,3 @@ class JUMPredictCustSegment(Resource):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
