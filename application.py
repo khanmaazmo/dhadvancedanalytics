@@ -104,7 +104,7 @@ a_jumcustsegmentpredjson = jum_apinamespace.model('jumcustsegmentpredjson', {'NA
 
 @jum_apinamespace.route('/predictcustsegment')
 class JUMPredictCustSegment(Resource):
-    @apinamespace.expect(a_damchurnjson)
+    @jum_apinamespace.expect(a_jumcustsegmentpredjson)
     def post(self):
         if request.authorization:
             username = request.authorization.username
@@ -132,8 +132,8 @@ class JUMPredictCustSegment(Resource):
         cursordh = cnxndh.cursor()
 
         for index, row in inputdf.iterrows():
-             htent = float(row['htent'])
-             hunit = float(row['hunit'])
+             htent = 47867#float(row['htent'])
+             hunit = 7824$float(row['hunit'])
              query = "SELECT htent, hunit, preds from dbo.damchurnprediction where htent = " + str(htent) + " and hunit = " + str(hunit)
              df = pd.read_sql(query, cnxn)
              print(df)
