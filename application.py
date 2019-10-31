@@ -142,7 +142,7 @@ class JUMPredictCustSegment(Resource):
                  outputdf = df
              else:
                  outputdf = pd.concat([outputdf, df])
-             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegmentation',90000,GETDATE(),?)",htent)
+             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegmentation',90000,GETDATE(),?,?)",htent,hunit)
              cnxndh.commit()
 
         print(outputdf)
