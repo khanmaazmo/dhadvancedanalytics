@@ -100,7 +100,7 @@ class DAMLeadScore(Resource):
 
 jum_apinamespace = api.namespace('jumapis', description='DH AA COE Published Data Science Model APIs for Jumeirah')
 
-a_jumcustsegmentpredjson = jum_apinamespace.model('jumcustsegmentpredjson', {'NAME_ID': fields.Integer('Name ID')})
+a_jumcustsegmentpredjson = jum_apinamespace.model('jumcustsegmentpredjson', {'NameID': fields.Integer('NameID')})
 
 @jum_apinamespace.route('/predictcustsegment')
 class JUMPredictCustSegment(Resource):
@@ -132,7 +132,7 @@ class JUMPredictCustSegment(Resource):
         cursordh = cnxndh.cursor()
 
         for index, row in inputdf.iterrows():
-             #vnameid = 999#float(row['NAME_ID'])
+             vnameid = float(row['NameID'])
              htent = 47867#float(row['htent'])
              hunit = 7824#float(row['hunit'])
              query = "SELECT htent, hunit, preds from dbo.damchurnprediction where htent = " + str(htent) + " and hunit = " + str(hunit)
@@ -142,7 +142,7 @@ class JUMPredictCustSegment(Resource):
                  outputdf = df
              else:
                  outputdf = pd.concat([outputdf, df])
-             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegmentation',90000,GETDATE(),?,?)",htent,hunit)
+             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegmentation',90000,GETDATE(),?,?)",vnameid,hunit)
              cnxndh.commit()
 
         print(outputdf)
