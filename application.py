@@ -112,7 +112,7 @@ class JUMPredictCustSegment(Resource):
         else:
             return make_response('Basic Authentication not provided', 401, {'WWW-Authenticate': 'Basic-realm="Login Required"'})
 
-        if username != app.config["DAMCHURPRED_USERNAME"] or password != app.config["DAMCHURPRED_PASSWORD"]:
+        if username != app.config["JUM_USERNAME"] or password != app.config["JUM_PASSWORD"]:
             return make_response('Incorrect Basic Authentication', 401, {'WWW-Authenticate' : 'Basic-realm="Login Required"'})
 
         content = request.get_json()
@@ -145,7 +145,6 @@ class JUMPredictCustSegment(Resource):
 
         print(outputdf)
         resp = Response(response=outputdf.to_json(orient='records'),status=200,mimetype="application/json")
-        #return outputdf.to_json(orient='records')
         return resp
 
 
