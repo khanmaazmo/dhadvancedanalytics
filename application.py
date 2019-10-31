@@ -127,7 +127,7 @@ class JUMPredictCustSegment(Resource):
         dhdbusername = app.config["DHMODEL_DBUSER"]
         dhdbpassword = app.config["DHMODEL_DBPWD"]
 
-        cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + dbusername + ';PWD=' + dbpassword)
+        cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + dhserver + ';DATABASE=' + dhdatabase + ';UID=' + dhdbusername + ';PWD=' + dhdbpassword)
         cnxndh = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + dhserver + ';DATABASE=' + dhdatabase + ';UID=' + dhdbusername + ';PWD=' + dhdbpassword)
         cursordh = cnxndh.cursor()
 
@@ -135,7 +135,7 @@ class JUMPredictCustSegment(Resource):
              vnameid = float(row['NameID'])
              htent = 47867#float(row['htent'])
              hunit = 7824#float(row['hunit'])
-             query = "SELECT htent, hunit, preds from dbo.damchurnprediction where htent = " + str(htent) + " and hunit = " + str(hunit)
+             query = "SELECT NAME_ID, cluster from dbo.jumcustsegmentpredtable where NAME_ID = " + str(vnameid)
              df = pd.read_sql(query, cnxn)
              print(df)
              if index == 0:
