@@ -133,8 +133,6 @@ class JUMPredictCustSegment(Resource):
 
         for index, row in inputdf.iterrows():
              vnameid = float(row['NameID'])
-             htent = 47867#float(row['htent'])
-             hunit = 7824#float(row['hunit'])
              query = "SELECT NAME_ID, cluster from dbo.jumcustsegmentpredtable where NAME_ID = " + str(vnameid)
              df = pd.read_sql(query, cnxn)
              print(df)
@@ -142,7 +140,7 @@ class JUMPredictCustSegment(Resource):
                  outputdf = df
              else:
                  outputdf = pd.concat([outputdf, df])
-             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegmentation',90000,GETDATE(),?,?)",vnameid,hunit)
+             cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('JUM','CustomerSegmentation',90000,GETDATE(),?,99)",vnameid)
              cnxndh.commit()
 
         print(outputdf)
