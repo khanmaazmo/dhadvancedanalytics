@@ -118,16 +118,16 @@ class JUMPredictCustSegment(Resource):
         content = request.get_json()
         inputdf = pd.io.json.json_normalize(content)
         print(inputdf.count())
-        server = app.config["DAMCHURPRED_DBSERVER"]
-        database = app.config["DAMCHURPRED_DBNAME"]
-        dbusername = app.config["DAMCHURPRED_DBUSER"]
-        dbpassword = app.config["DAMCHURPRED_DBPWD"]
+        server = app.config["JUM_DBSERVER"]
+        database = app.config["JUM_DBNAME"]
+        dbusername = app.config["JUM_DBUSER"]
+        dbpassword = app.config["JUM_DBPWD"]
         dhserver = app.config["DHMODEL_DBSERVER"]
         dhdatabase = app.config["DHMODEL_DBNAME"]
         dhdbusername = app.config["DHMODEL_DBUSER"]
         dhdbpassword = app.config["DHMODEL_DBPWD"]
 
-        cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + dhserver + ';DATABASE=' + dhdatabase + ';UID=' + dhdbusername + ';PWD=' + dhdbpassword)
+        cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + dbusername + ';PWD=' + dbpassword)
         cnxndh = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + dhserver + ';DATABASE=' + dhdatabase + ';UID=' + dhdbusername + ';PWD=' + dhdbpassword)
         cursordh = cnxndh.cursor()
 
