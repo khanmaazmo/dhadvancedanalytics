@@ -84,10 +84,8 @@ class DAMChurnPredictRisk(Resource):
                  outputdf = df
              else:
                  outputdf = pd.concat([outputdf, df])
-             cursordh.execute(
-                 "INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('DAM','ChurnPrediction',90000,GETDATE(),?,?)",
-                 htent, hunit)
-             cnxndh.commit()
+             #cursordh.execute("INSERT dbo.modelstats(Vertical, Model, Value, DateofCall, Input1,Input2) VALUES('DAM','ChurnPrediction',90000,GETDATE(),?,?)",htent, hunit)
+             #cnxndh.commit()
 
         print(outputdf)
         resp = Response(response=outputdf.to_json(orient='records'),status=200,mimetype="application/json")
