@@ -133,7 +133,7 @@ class JUMPredictCustSegment(Resource):
 
         for index, row in inputdf.iterrows():
              htent = 47867#float(row['htent'])
-             hunit = 7824$float(row['hunit'])
+             hunit = 7824#float(row['hunit'])
              query = "SELECT htent, hunit, preds from dbo.damchurnprediction where htent = " + str(htent) + " and hunit = " + str(hunit)
              df = pd.read_sql(query, cnxn)
              print(df)
