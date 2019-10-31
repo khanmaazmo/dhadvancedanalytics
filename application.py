@@ -33,9 +33,13 @@ authorizations = {
 
 api = Api(app,security='Basic Auth', authorizations=authorizations)
 apinamespace = api.namespace('damapis', description='DH AA COE Published Data Science Model APIs for Dubai Asset Management')
+jum_apinamespace = api.namespace('jumapis', description='DH AA COE Published Data Science Model APIs for Jumeirah')
 
 a_language = apinamespace.model('Language', {'language': fields.String('The Language.')})
 a_damchurnjson = apinamespace.model('damchurnjson', {'htent': fields.Integer('Htenant ID'),'hunit': fields.Integer('Unit ID')})
+
+a_jumcustsegmentpredjson = jum_apinamespace.model('jumcustsegmentpredjson', {'nameid': fields.Integer('Name ID')})
+
 
 languages = []
 python = {'language': 'Python'}
@@ -100,18 +104,10 @@ class DAMLeadScore(Resource):
     def get(self):
         return languages
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
-
-jum_apinamespace = api.namespace('jumapis', description='DH AA COE Published Data Science Model APIs for Jumeirah')
-
-a_jumcustsegmentpredjson = jum_apinamespace.model('jumcustsegmentpredjson', {'nameid': fields.Integer('Name ID')})
 
 @jum_apinamespace.route('/predictcustsegment')
 class JUMPredictCustSegment(Resource):
-    @apinamespace.expect(a_jumcustsegmentpredjson)
+    @jum_apinamespace.expect(a_jumcustsegmentpredjson)
     def post(self):
         if request.authorization:
             username = request.authorization.username
@@ -155,3 +151,8 @@ class JUMPredictCustSegment(Resource):
         resp = Response(response=outputdf.to_json(orient='records'),status=200,mimetype="application/json")
         #return outputdf.to_json(orient='records')
         return resp
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
